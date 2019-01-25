@@ -5,6 +5,8 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "@material/react-button": "^0.9.0",
+    "@material/theme": "^0.43.0",
     "gatsby": "^2.0.76",
     "gatsby-image": "^2.0.20",
     "gatsby-plugin-manifest": "^2.0.9",
@@ -27,12 +29,13 @@
   ],
   "license": "MIT",
   "scripts": {
+    "prebuild": "rm -rf public",
     "build": "gatsby build",
     "postbuild": "npm run purge",
     "develop": "gatsby develop",
     "start": "npm run develop",
     "format": "prettier --write \"src/**/*.js\"",
-    "purge": "node scripts/puregecss",
+    "purge": "node scripts/purgecss",
     "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
   },
   "devDependencies": {
