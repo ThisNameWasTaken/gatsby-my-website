@@ -1,4 +1,4 @@
-# Movig [my website](https://www.adriandinca.com/) to [GatsbyJS](https://www.gatsbyjs.org/)
+# Movig [my website](https://adriandinca.com/) to [GatsbyJS](https://www.gatsbyjs.org/)
 
 ## ⚙️ Scripts
 1. Run the dev server 
