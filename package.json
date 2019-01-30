@@ -40,10 +40,16 @@
     "serve": "gatsby serve",
     "format": "prettier --write \"src/**/*.js\"",
     "purge": "node scripts/purgecss",
-    "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
+    "test": "jest"
   },
   "devDependencies": {
     "@types/react": "^16.7.20",
+    "babel-jest": "^24.0.0",
+    "babel-preset-gatsby": "^0.1.6",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.8.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^24.0.0",
     "prettier": "^1.15.2"
   },
   "repository": {
