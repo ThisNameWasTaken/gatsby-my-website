@@ -1,147 +1,83 @@
-import React, { Component, createRef, cloneElement } from 'react';
-import { string, bool, element } from 'prop-types';
+import React from 'react';
 import classnames from 'classnames';
-import { MDCRipple } from '@material/ripple';
+import { Link } from 'gatsby';
+import { withRipple } from '@material/react-ripple';
 import './Button.scss';
-import { navigate } from 'gatsby';
 
 /**
  * @typedef {import('react')} React
+ *
+ * @typedef MDCButtonProps
+ * @property {Boolean=} raised
+ * @property {Boolean=} unelevated
+ * @property {Boolean=} outlined
+ * @property {Boolean=} dense
+ * @property {Boolean=} disabled
+ * @property {React.RefObject=} initRipple
+ * @property {React.ReactElement<React.HTMLProps<HTMLOrSVGElement>>=} icon
+ * @property {React.ReactElement<React.HTMLProps<HTMLOrSVGElement>>=} trailingIcon
+ *
+ * @typedef {React.AnchorHTMLAttributes & React.ButtonHTMLAttributes & MDCButtonProps} ButtonProps
+ *
+ * @type {React.SFC<ButtonProps>}
  */
-
-/**
- * @typedef {Object} Props
- * @property {Boolean} raised
- * @property {Boolean} unelevated
- * @property {Boolean} outlined
- * @property {Boolean} dense
- * @property {Boolean} noRipple
- * @property {React.ReactElement} icon
- * @property {String} to
- */
-
-/**
- * @typedef {React.AnchorHTMLAttributes & React.ButtonHTMLAttributes} ButtonTypes
- * @typedef {Props & ButtonTypes} ButtonProps
- */
-
-/**
- * @extends {Component<ButtonProps>}
- */
-export default class Button extends Component {
-  static propTypes = {
-    className: string,
-    raised: bool,
-    unelevated: bool,
-    outlined: bool,
-    dense: bool,
-    noRipple: bool,
-    icon: element,
-    to: string
-  };
-
-  static defaultProps = {
-    className: undefined,
-    raised: false,
-    unelevated: false,
-    outlined: false,
-    dense: false,
-    noRipple: false,
-    icon: undefined,
-    to: undefined
-  };
-
-  /**
-   * @param {ButtonProps} props 
-   */
-  constructor(props) {
-    super(props);
-
-    const {
-      className,
-      raised,
-      unelevated,
-      outlined,
-      dense,
-      icon,
-    } = props;
-
-    this.classNames = classnames('mdc-button', {
+export const Button = ({
+  className,
+  raised,
+  unelevated,
+  outlined,
+  dense,
+  disabled,
+  icon,
+  href,
+  initRipple,
+  children,
+  trailingIcon,
+  ...otherProps
+}) => {
+  const props = {
+    className: classnames('mdc-button', className, {
       'mdc-button--raised': raised,
       'mdc-button--unelevated': unelevated,
       'mdc-button--outlined': outlined,
-      'mdc-button--dense': dense
-    }, className);
+      'mdc-button--dense': dense,
+    }),
+    ref: initRipple,
+    disabled,
+    ...otherProps,
+  };
 
-    this.icon = icon && cloneElement(icon, {
-      className: classnames('mdc-button__icon', icon.props.className)
-    });
+  const commonChildren = (
+    <>
+      {renderIcon(icon)}
+      <span className="mdc-button__label">{children}</span>
+      {renderIcon(trailingIcon)}
+    </>
+  );
 
-    this.htmlElement = createRef();
-  }
-
-  componentDidMount() {
-    if (!this.props.noRipple) {
-      this.ripple = new MDCRipple(this.htmlElement.current);
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.ripple) {
-      this.ripple.destroy();
-    }
-  }
-
-  render() {
-    const {
-      className,
-      raised,
-      unelevated,
-      outlined,
-      dense,
-      noRipple,
-      icon,
-      to,
-      href,
-      children,
-      ...otherProps
-    } = this.props;
-
-    const onClick = to && (
-      event => {
-        event.preventDefault();
-        navigate(to);
-      }
-    );
-
-    if (to || href) {
+  if (href) {
+    const INTERNAL_URL = /^\/(?!\/)/;
+    if (INTERNAL_URL.test(href)) {
       return (
-        <a
-          onClick={onClick}
-          href={to || href}
-          ref={this.htmlElement}
-          className={this.classNames}
-          {...otherProps}
-        >
-          {this.icon}
-          <span className="mdc-button__label">
-            {children}
-          </span>
-        </a>
+        <Link to={href} {...props}>
+          {commonChildren}
+        </Link>
       );
     }
-
     return (
-      <button
-        ref={this.htmlElement}
-        className={this.classNames}
-        {...otherProps}
-      >
-        {this.icon}
-        <span className="mdc-button__label">
-          {children}
-        </span>
-      </button>
+      <a href={href} {...props}>
+        {commonChildren}
+      </a>
     );
   }
-}
+
+  return <button {...props}>{commonChildren}</button>;
+};
+
+const renderIcon = icon =>
+  icon &&
+  React.cloneElement(icon, {
+    className: classnames('mdc-button__icon', icon.props.className),
+  });
+
+export default withRipple(Button);
