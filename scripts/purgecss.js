@@ -1,4 +1,3 @@
-
 const path = require('path');
 const glob = require('glob');
 const PurgeCss = require('purgecss');
@@ -10,8 +9,8 @@ const readFile = promisify(_readFile);
 
 const PATHS = {
   public: path.join(__dirname, '../public'),
-  node_modules: path.join(__dirname, '../node_modules')
-}
+  node_modules: path.join(__dirname, '../node_modules'),
+};
 
 const extractorPattern = /[A-Za-z0-9-_\/]+/g;
 
@@ -19,7 +18,7 @@ class HtmlBodyExtractor {
   static extract(content) {
     const body = content.match(/<body>[\s\S]+<\/body>/)[0];
 
-    if (!body) { return []; }
+    if (!body) return [];
 
     return body.match(extractorPattern) || [];
   }
@@ -32,23 +31,29 @@ class DefaultExtractor {
 }
 
 const purgeCss = new PurgeCss({
-  extractors: [{
-    extractor: HtmlBodyExtractor, // Only purge the body so we do not take into account the selectors from the inlined styles (which are not yet purged)
-    extensions: ['html'],
-  }, {
-    extractor: DefaultExtractor,
-    extensions: ['js', 'jsx', 'ts', 'tsx']
-  }],
+  extractors: [
+    {
+      extractor: HtmlBodyExtractor, // Only purge the body so we do not take into account the selectors from the inlined styles (which are not yet purged)
+      extensions: ['html'],
+    },
+    {
+      extractor: DefaultExtractor,
+      extensions: ['js', 'jsx', 'ts', 'tsx'],
+    },
+  ],
   content: [
     path.join(PATHS.public, '/**/*.html'),
-    path.join(PATHS.node_modules, '/@material/!(react-*)/**/!(*.d).{js,jsx,tsx,tsx}'),
+    path.join(
+      PATHS.node_modules,
+      '/@material/!(react-*)/**/!(*.d).{js,jsx,tsx,tsx}'
+    ),
   ],
   css: [path.join(PATHS.public, '/**/*.css')],
   // whitelistPatterns: [/-upgraded/, /-ripple/], // Keep selectors that match this patterns
   // Purgecss' keyframes purging algorithm does not seem to work for multiple animations if there is no space in between the comma and the next animation name (i.e. ... ease,second-animation ...)
   // For now I recommend disabling the keyframes option if your stylesheets contain multiple animations
   // I have currently opened an issue on their github page and added a PR with the fix for it
-  keyframes: true, // Remove unused keyframes
+  // keyframes: true, // Remove unused keyframes
   fontFace: true, // Remove unsued @font-face rules
   // rejected: true,
 });
@@ -67,22 +72,30 @@ const purgeResults = purgeCss.purge();
 
       const styleTags = html.match(inlinedStylePattern);
       styleTags.forEach(styleTag => {
-        const [, cssFile, inlinedStyles] = styleTag.match(/<style data-href="\/(.*?)">(.*?)<\/style>/m);
+        const [, cssFile, inlinedStyles] = styleTag.match(
+          /<style data-href="\/(.*?)">(.*?)<\/style>/m
+        );
 
-        const purgedCss = purgeResults.find(result => path.basename(result.file) === cssFile).css;
+        const purgedCss = purgeResults.find(
+          result => path.basename(result.file) === cssFile
+        ).css;
 
         // since the css files have already been purged
         // we use the selector inside them to remove
-        // the unsued selectors from the inlined styles
+        // the unused selectors from the inlined styles
         const purgeCss = new PurgeCss({
-          extractors: [{
-            extractor: DefaultExtractor,
-            extensions: ['css'],
-          }],
-          content: [{
-            raw: purgedCss,
-            extension: 'css'
-          }],
+          extractors: [
+            {
+              extractor: DefaultExtractor,
+              extensions: ['css'],
+            },
+          ],
+          content: [
+            {
+              raw: purgedCss,
+              extension: 'css',
+            },
+          ],
           css: [{ raw: inlinedStyles }],
           rejected: true,
         });
