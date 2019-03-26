@@ -1,0 +1,12 @@
+@import '../sass/variables.scss';
+
+.home-banner {
+  height: 100vh;
+  background: $mdc-theme-primary;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 1rem;
+  min-height: $home-banner-min-height;
+}
