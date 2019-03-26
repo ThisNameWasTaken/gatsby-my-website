@@ -1,0 +1,86 @@
+@import '../sass/variables.scss';
+@import '@material/button/mdc-button';
+@import '@material/ripple/mdc-ripple';
+@import '@material/elevation/mdc-elevation';
+
+.navbar {
+  width: 100%;
+  display: flex;
+  height: $navbar-height;
+  position: relative;
+  background-color: transparent;
+  z-index: 8;
+  &-adjust {
+    padding-top: $navbar-height;
+  }
+  &--fixed {
+    position: fixed;
+    top: 0;
+  }
+  &--transparent & {
+    &__background {
+      opacity: 0;
+      transform: scaleY(1.25);
+    }
+    &__item {
+      & > .mdc-button {
+        @include mdc-button-ink-color(#fff);
+        @include mdc-states(#fff);
+        transition: color 0s 0s;
+      }
+    }
+  }
+  &__background {
+    background-color: $navbar-background-color;
+    @include mdc-elevation(8);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: block;
+    height: $navbar-height;
+    transition: opacity 0.25s ease-in-out, transform 0.2s ease-in-out;
+  }
+  &__left {
+    order: 1;
+    display: flex;
+    justify-content: flex-start;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 0; // allow items to shrink
+  }
+  &__center {
+    order: 2;
+    display: flex;
+    margin: 0 auto;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    justify-content: center;
+  }
+  &__right {
+    order: 3;
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 0; // allow items to shrink
+  }
+  &__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $navbar-foreground-color;
+    position: relative;
+    & > .mdc-button {
+      @include mdc-button-ink-color($navbar-foreground-color);
+      @include mdc-states($navbar-foreground-color);
+      transition: color 0s ease-in-out 0.15s;
+    }
+    a {
+      display: flex;
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+}
