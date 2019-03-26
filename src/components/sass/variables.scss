@@ -1,0 +1,20 @@
+// THEME
+$mdc-theme-primary: #a600ff;
+$mdc-theme-secondary: #ffa600;
+$mdc-theme-primary-contrast: #fff;
+$mdc-theme-secondary-contrast: #000;
+
+// NAVBAR
+$navbar-height: 3.5rem !default;
+$navbar-background-color: #fff !default;
+$navbar-foreground-color: $mdc-theme-primary !default;
+
+// Home banner
+$home-banner-min-height: 400px !default;
+
+:export {
+  themePrimary: $mdc-theme-primary;
+  themeSecondary: $mdc-theme-secondary;
+  themePrimaryContrast: $mdc-theme-primary-contrast;
+  themeSecondaryContrast: $mdc-theme-secondary-contrast;
+}

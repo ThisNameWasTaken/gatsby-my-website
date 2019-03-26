@@ -1,0 +1,7 @@
+@import '@material/mdc-theme/functions.scss';
+
+// Determine whether to use black or white text on top of given color to meet accessibility standards for contrast.
+// Returns "rgba(#000, 0.87)" if the given color is "light" and "#fff" if the given color is dark
+@function contrast-color($color) {
+  @return if(mdc-contrast-tone($color) == 'dark', rgba(#000, 0.87), #fff);
+}
